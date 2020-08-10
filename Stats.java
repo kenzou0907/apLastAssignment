@@ -1,9 +1,3 @@
-/**
- * 課題名　最終課題
- * 学生証番号　953580
- * 氏名　近藤 英雅
- */
-
 public class Stats{
     Integer count = 0;
     Integer max = Integer.MIN_VALUE;

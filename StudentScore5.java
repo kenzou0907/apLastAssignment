@@ -1,9 +1,3 @@
-/**
- * 課題名　最終課題
- * 学生証番号　953580
- * 氏名　近藤 英雅
- */
-
 import java.util.HashMap;
 import java.util.Map;
 

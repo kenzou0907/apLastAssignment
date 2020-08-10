@@ -1,10 +1,3 @@
-/**
- * 課題名　最終課題 ステップ1
- * 学生証番号　953580
- * 氏名　近藤 英雅
- * 提出日　2020年8月10日
- */
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
