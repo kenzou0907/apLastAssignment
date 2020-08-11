@@ -1,2 +1,6 @@
 EZ.java
 .DS_Store
+*.class
+*.png
+*.csv
+
