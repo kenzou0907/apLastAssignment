@@ -2,8 +2,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -87,59 +85,39 @@ public class ScoreAnalyzer3{
         }
     }
 
-    // ターミナル出力と同時に出力を行うメソッド
-    void printAndWrite(String line, PrintWriter out) throws IOException{
-        System.out.print(line);
-        out.print(line);
-    }
-
-    void avrPrintfAndWrite(Double line, PrintWriter out) throws IOException{
-        System.out.printf("%7.6f", line);
-        out.printf("%7.6f", line);
-    }
-
-    // ターミナル出力と同時に出力を行うメソッド
-    void printlnAndWrite(PrintWriter out) throws IOException{
-        System.out.println();
-        out.println();
-    }
-
     // 出力を管理するメソッド
-    void manageScoreOutput(HashMap<String, StudentScore> scoreMap, ArrayList<Integer> problemNumList) throws IOException{
-        PrintWriter out = new PrintWriter(new File("ScoreAnalyzer3.csv"));
+    void manageScoreOutput(HashMap<String, StudentScore> scoreMap, ArrayList<Integer> problemNumList){
         Collections.sort(problemNumList);
         HashMap<Integer, Stats> totalStats = this.makeTotalStats(problemNumList);
 
         // 生徒のデータの出力
-        this.outputStudentScoreData(scoreMap, problemNumList, totalStats, out);
+        this.outputStudentScoreData(scoreMap, problemNumList, totalStats);
         // 全体の点数の出力
-        this.outputTheTotalScore(totalStats, problemNumList, out);
-        out.close();
+        this.outputTheTotalScore(totalStats, problemNumList);
     }
 
     // 生徒のデータの出力
-    void outputStudentScoreData(HashMap<String, StudentScore> scoreMap, ArrayList<Integer> problemNumList, HashMap<Integer, Stats> totalStats, PrintWriter out) throws IOException{
+    void outputStudentScoreData(HashMap<String, StudentScore> scoreMap, ArrayList<Integer> problemNumList, HashMap<Integer, Stats> totalStats){
         for(Map.Entry<String, StudentScore> entry: scoreMap.entrySet()){
             String id = entry.getKey();
             StudentScore studentData = entry.getValue();
 
             // idと点数の出力
-            this.printAndWrite(id + ",", out);
+            System.out.print(id + ",");
             for(Integer problemNum: problemNumList){
-                this.studentscoreWrite(problemNum, studentData, out);
+                this.studentScoreWrite(problemNum, studentData);
                 // 全体の点数に反映
                 this.replaceTotalStats(problemNum, totalStats, studentData);
             }
 
             // 最大値の出力
-            this.printAndWrite(Integer.toString(studentData.getMax()) + ",", out);
+            System.out.print(Integer.toString(studentData.getMax()) + ",");
 
             // 最小値の出力
-            this.printAndWrite(Integer.toString(studentData.getMin()) + ",", out);
+            System.out.print(Integer.toString(studentData.getMin()) + ",");
 
             // 平均値の出力
-            this.avrPrintfAndWrite(studentData.getAvr(), out);
-            this.printlnAndWrite(out);
+            System.out.printf("%7.6f%n", studentData.getAvr());
         }
     }
 
@@ -160,34 +138,33 @@ public class ScoreAnalyzer3{
     }
 
     // 生徒の点数を出力
-    void studentscoreWrite(Integer problemNum, StudentScore studentData, PrintWriter out) throws IOException{
+    void studentScoreWrite(Integer problemNum, StudentScore studentData){
         if(studentData.studentScore.get(Integer.toString(problemNum)) == null || studentData.studentScore.get(Integer.toString(problemNum)) == -1){
-            this.printAndWrite(",", out);
+            System.out.print(",");
         }else{
-            this.printAndWrite(Integer.toString(studentData.studentScore.get(Integer.toString(problemNum))) + ",", out);
+            System.out.print(Integer.toString(studentData.studentScore.get(Integer.toString(problemNum))) + ",");
         }
     }
 
     // 全体の値の出力
-    void outputTheTotalScore(HashMap<Integer, Stats> totalStats, ArrayList<Integer> problemNumList, PrintWriter out) throws IOException{
+    void outputTheTotalScore(HashMap<Integer, Stats> totalStats, ArrayList<Integer> problemNumList){
         // 最大値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite("," + Integer.toString(totalStats.get(problemNum).max), out);
+            System.out.print("," + Integer.toString(totalStats.get(problemNum).max));
         }
-        this.printlnAndWrite(out);
+        System.out.println();
 
         // 最小値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite("," + Integer.toString(totalStats.get(problemNum).min), out);
+            System.out.print("," + Integer.toString(totalStats.get(problemNum).min));
         }
-        this.printlnAndWrite(out);
+        System.out.println();
 
         // 平均値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite(",", out);
-            this.avrPrintfAndWrite(totalStats.get(problemNum).avr, out);
+            System.out.printf(",%.6f", totalStats.get(problemNum).avr);
         }
-        this.printlnAndWrite(out);
+        System.out.println();
     }
 
     public static void main(String[] args) throws IOException{

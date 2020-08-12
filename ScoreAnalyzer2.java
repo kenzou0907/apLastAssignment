@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,17 +11,17 @@ public class ScoreAnalyzer2{
     void run(String[] args) throws IOException{
         // 一応事前処理を作成しておく
         if(args.length < 1) return;
-        File inputfile = new File(args[0]);
-        if(!inputfile.exists()) return;
+        File inputFile = new File(args[0]);
+        if(!inputFile.exists()) return;
 
         // 読み込んだファイルの得点状況を辞書にして出力する
-        this.manageScoreOutput(this.readFile(inputfile));
+        this.manageScoreOutput(this.readFile(inputFile));
     }
 
     // 与えられたファイルを読み込むメソッド
-    HashMap<String, HashMap<String, Integer>> readFile(File inputfile) throws IOException{
+    HashMap<String, HashMap<String, Integer>> readFile(File inputFile) throws IOException{
         HashMap<String, HashMap<String, Integer>> scoreMap = new HashMap<>();
-        BufferedReader in = new BufferedReader(new FileReader(inputfile));
+        BufferedReader in = new BufferedReader(new FileReader(inputFile));
         String[] splitLine; // 分割した入力文字列
         String line; // 入力文字列
 
@@ -54,31 +53,16 @@ public class ScoreAnalyzer2{
         }
     }
 
-    // ターミナル出力と同時に出力を行うメソッド
-    void printAndWrite(String line, PrintWriter out) throws IOException{
-        System.out.print(line);
-        out.print(line);
-    }
-
-    // ターミナル出力と同時に出力を行うメソッド
-    void printlnAndWrite(PrintWriter out) throws IOException{
-        System.out.println();
-        out.println();
-    }
-
     // 出力全体を管理するメソッド
-    void manageScoreOutput(HashMap<String, HashMap<String, Integer>> scoreMap) throws IOException{
+    void manageScoreOutput(HashMap<String, HashMap<String, Integer>> scoreMap){
         ArrayList<String> scores = this.scoreCollect(scoreMap);
-        PrintWriter out = new PrintWriter(new File("ScoreAnalyzer2.csv"));
 
         // スコアを文字列の順に並べる
         Collections.sort(scores);
 
         // 1行目の出力
-        this.outputFirstLine(scores, out);
-        this.outputAfterSecondLine(scoreMap, scores, out);
-
-        out.close();
+        this.outputFirstLine(scores);
+        this.outputAfterSecondLine(scoreMap, scores);
     }
 
     // 合計人数の集計を行うメソッド
@@ -92,16 +76,16 @@ public class ScoreAnalyzer2{
     }
 
     // 1行目の出力
-    void outputFirstLine(ArrayList<String> scores, PrintWriter out) throws IOException {
+    void outputFirstLine(ArrayList<String> scores){
         for(String score: scores){
-            this.printAndWrite(",", out);
-            this.printAndWrite(score, out);
+            System.out.print(",");
+            System.out.print(score);
         }
-        this.printlnAndWrite(out);
+        System.out.println();
     }
 
     // 2行目以降の出力
-    void outputAfterSecondLine(HashMap<String, HashMap<String, Integer>> scoreMap, ArrayList<String> scores, PrintWriter out) throws IOException{
+    void outputAfterSecondLine(HashMap<String, HashMap<String, Integer>> scoreMap, ArrayList<String> scores){
         // 2行目以降の出力
         for(Map.Entry<String, HashMap<String, Integer>> entry: scoreMap.entrySet()){
             String key = entry.getKey();
@@ -111,8 +95,8 @@ public class ScoreAnalyzer2{
             Integer totalPeopleNum = this.countTheTotalNumberOfPeople(value);
 
             // 出力
-            this.printAndWrite(key + ",", out);
-            this.outputOfScoreforEachProblem(value, scores, totalPeopleNum, out);
+            System.out.print(key + ",");
+            this.outputOfScoreforEachProblem(value, scores, totalPeopleNum);
         }
     }
 
@@ -138,16 +122,15 @@ public class ScoreAnalyzer2{
     }
 
     // 2行目以降の出力
-    void outputOfScoreforEachProblem(HashMap<String, Integer> scorevalue, ArrayList<String> scores, Integer totalPeopleNum, PrintWriter out) throws IOException{
+    void outputOfScoreforEachProblem(HashMap<String, Integer> scorevalue, ArrayList<String> scores, Integer totalPeopleNum){
         for(String score: scores){
             if(scorevalue.get(score) != null){
-                System.out.printf("%6.3f", (double)scorevalue.get(score) * 100.0 / totalPeopleNum);
-                out.printf("%6.3f", (double)scorevalue.get(score) * 100.0 / totalPeopleNum);
+                System.out.printf("%.3f", (double)scorevalue.get(score) * 100.0 / totalPeopleNum);
             }
             if(!scores.get(scores.size() - 1).equals(score)){
-                this.printAndWrite(",", out);
+                System.out.print(",");
             }else{
-                this.printlnAndWrite(out);
+                System.out.println();
             }
         }
     }

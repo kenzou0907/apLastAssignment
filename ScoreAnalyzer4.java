@@ -5,7 +5,6 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,61 +88,41 @@ public class ScoreAnalyzer4{
         }
     }
 
-    // ターミナル出力と同時に出力を行うメソッド
-    void printAndWrite(String line, PrintWriter out) throws IOException{
-        System.out.print(line);
-        out.print(line);
-    }
-
-    // 平均値を出力するメソッド
-    void avrPrintfAndWrite(Double line, PrintWriter out) throws IOException{
-        System.out.printf("%7.6f", line);
-        out.printf("%7.6f", line);
-    }
-
-    // ターミナル出力と同時に出力を行うメソッド
-    void printlnAndWrite(PrintWriter out) throws IOException{
-        System.out.println();
-        out.println();
-    }
-
     // 出力を行うメソッド
     void manageScoreOutput(HashMap<String, StudentScore> scoreMap, ArrayList<Integer> problemNumList) throws IOException{
-        PrintWriter out = new PrintWriter(new File("ScoreAnalyzer4.csv"));
         Collections.sort(problemNumList);
         HashMap<Integer, Stats> totalStats = this.makeTotalStats(problemNumList);
 
         for(Map.Entry<String, StudentScore> entry: scoreMap.entrySet()){
             // 出力
-            this.outputStatsForEachStudent(entry.getKey(), entry.getValue(), out, problemNumList, totalStats);
+            this.outputStatsForEachStudent(entry.getKey(), entry.getValue(), problemNumList, totalStats);
         }
 
         // 全体の点数の出力
-        this.outputTheTotalScore(totalStats, problemNumList, out);
-        out.close();
+        this.outputTheTotalScore(totalStats, problemNumList);
 
-        this.makeHeatMap(scoreMap, problemNumList, makeStringIdList(scoreMap), totalStats);
+        // ヒートマップの作成
+        this.makeHeatMap(scoreMap, problemNumList, this.makeStringIdList(scoreMap), totalStats);
     }
 
     // 出力をまとめたメソッド
-    void outputStatsForEachStudent(String id, StudentScore studentData, PrintWriter out, ArrayList<Integer> problemNumList, HashMap<Integer, Stats> totalStats) throws IOException {
+    void outputStatsForEachStudent(String id, StudentScore studentData, ArrayList<Integer> problemNumList, HashMap<Integer, Stats> totalStats){
         // idと点数の出力
-        this.printAndWrite(id + ",", out);
+        System.out.print(id + ",");
         for(Integer problemNum: problemNumList){
-            this.studentscoreWrite(problemNum, studentData, out);
+            this.studentScoreWrite(problemNum, studentData);
             // 全体の点数に反映
             this.replaceTotalStats(problemNum, totalStats, studentData);
         }
 
         // 最大値の出力
-        this.printAndWrite(Integer.toString(studentData.getMax()) + ",", out);
+        System.out.print(Integer.toString(studentData.getMax()) + ",");
 
         // 最小値の出力
-        this.printAndWrite(Integer.toString(studentData.getMin()) + ",", out);
+        System.out.print(Integer.toString(studentData.getMin()) + ",");
 
         // 平均値の出力
-        this.avrPrintfAndWrite(studentData.getAvr(), out);
-        this.printlnAndWrite(out);
+        System.out.printf("%7.6f%n", studentData.getAvr());
     }
 
     // ヒートマップを実際に表示する
@@ -165,7 +144,7 @@ public class ScoreAnalyzer4{
 
     // 描画する
     void drawHeatMap(Integer score, Integer maxScore, Integer width, Integer height) throws IOException{
-        EZRectangle sq = EZ.addRectangle(width, height, 3, 3, this.calculatePixelColor(score, maxScore), true);
+        EZRectangle sq = EZ.addRectangle(width + 1, height + 1, 3, 3, this.calculatePixelColor(score, maxScore), true);
     }
 
     // 色の決定
@@ -205,36 +184,35 @@ public class ScoreAnalyzer4{
     }
 
     // 生徒の点数を出力
-    void studentscoreWrite(Integer problemNum, StudentScore studentData, PrintWriter out) throws IOException{
+    void studentScoreWrite(Integer problemNum, StudentScore studentData){
         if(studentData.studentScore.get(Integer.toString(problemNum)) == null || studentData.studentScore.get(Integer.toString(problemNum)) == -1){
-            this.printAndWrite(",", out);
+            System.out.print(",");
         }else{
-            this.printAndWrite(Integer.toString(studentData.studentScore.get(Integer.toString(problemNum))) + ",", out);
+            System.out.print(Integer.toString(studentData.studentScore.get(Integer.toString(problemNum))) + ",");
         }
     }
 
+
     // 全体の値の出力
-    void outputTheTotalScore(HashMap<Integer, Stats> totalStats, ArrayList<Integer> problemNumList, PrintWriter out) throws IOException{
+    void outputTheTotalScore(HashMap<Integer, Stats> totalStats, ArrayList<Integer> problemNumList){
         // 最大値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite("," + Integer.toString(totalStats.get(problemNum).max), out);
+            System.out.print("," + Integer.toString(totalStats.get(problemNum).max));
         }
-        this.printlnAndWrite(out);
+        System.out.println();
 
         // 最小値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite("," + Integer.toString(totalStats.get(problemNum).min), out);
+            System.out.print("," + Integer.toString(totalStats.get(problemNum).min));
         }
-        this.printlnAndWrite(out);
+        System.out.println();
 
         // 平均値の出力
         for(Integer problemNum: problemNumList){
-            this.printAndWrite(",", out);
-            this.avrPrintfAndWrite(totalStats.get(problemNum).avr, out);
+            System.out.printf(",%.6f", totalStats.get(problemNum).avr);
         }
-        this.printlnAndWrite(out);
+        System.out.println();
     }
-
 
     // pngファイルで出力する
     void outputImage(Integer width, Integer height) throws IOException {
