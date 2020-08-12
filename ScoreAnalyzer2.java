@@ -37,20 +37,20 @@ public class ScoreAnalyzer2{
     }
 
     // マップを変更するメソッド
-    void storeScoreInMap(HashMap<String, HashMap<String, Integer>> ret, String[] splitLine){
+    void storeScoreInMap(HashMap<String, HashMap<String, Integer>> scoreMap, String[] splitLine){
         // すでに課題番号が登録されている時
-        if(ret.get(splitLine[2]) != null){
-            if(ret.get(splitLine[2]).get(splitLine[4]) != null){
-                ret.get(splitLine[2]).replace(splitLine[4], ret.get(splitLine[2]).get(splitLine[4]) + 1);
+        if(scoreMap.get(splitLine[2]) != null){
+            if(scoreMap.get(splitLine[2]).get(splitLine[4]) != null){
+                scoreMap.get(splitLine[2]).replace(splitLine[4], scoreMap.get(splitLine[2]).get(splitLine[4]) + 1);
             }else{
-                ret.get(splitLine[2]).put(splitLine[4], 1);
+                scoreMap.get(splitLine[2]).put(splitLine[4], 1);
             }
         }
         // まだ課題番号が登録されていない時
         else{
             HashMap<String, Integer> tmp = new HashMap<>();
             tmp.put(splitLine[4], 1);
-            ret.put(splitLine[2], tmp);
+            scoreMap.put(splitLine[2], tmp);
         }
     }
 
@@ -71,7 +71,7 @@ public class ScoreAnalyzer2{
         ArrayList<String> scores = this.scoreCollect(scoreMap);
         PrintWriter out = new PrintWriter(new File("ScoreAnalyzer2.csv"));
 
-        // スコアを順に並べる
+        // スコアを文字列の順に並べる
         Collections.sort(scores);
 
         // 1行目の出力
@@ -85,8 +85,8 @@ public class ScoreAnalyzer2{
     Integer countTheTotalNumberOfPeople(HashMap<String, Integer> scoreMap){
         Integer totalPeopleNum = 0;
 
-        for(Integer value : scoreMap.values()) {
-            totalPeopleNum += value;
+        for(Integer peopleNum : scoreMap.values()) {
+            totalPeopleNum += peopleNum;
         }
         return totalPeopleNum;
     }
@@ -117,11 +117,11 @@ public class ScoreAnalyzer2{
     }
 
     // 存在する点数をリスト化する
-    ArrayList<String> scoreCollect(HashMap<String, HashMap<String, Integer>> scoremap){
+    ArrayList<String> scoreCollect(HashMap<String, HashMap<String, Integer>> scoreMap){
         ArrayList<String> scores = new ArrayList<>();
 
         // 点数がどのように定められているかを集計
-        for(Map.Entry<String, HashMap<String, Integer>> entry: scoremap.entrySet()){
+        for(Map.Entry<String, HashMap<String, Integer>> entry: scoreMap.entrySet()){
             HashMap<String, Integer> value = entry.getValue();
             for(String k: value.keySet()){
                 this.appendScore(scores, k);

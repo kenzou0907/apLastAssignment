@@ -21,7 +21,7 @@ public class ScoreAnalyzer1{
 
         // 点数の出力
         for(Map.Entry<String, Integer> entry: scoreMap.entrySet()){
-            printScore(entry.getKey(), entry.getValue(), totalPeopleNum);
+            this.printScore(entry.getKey(), entry.getValue(), totalPeopleNum);
         }
     }
 
@@ -29,16 +29,16 @@ public class ScoreAnalyzer1{
     Integer countTheTotalNumberOfPeople(HashMap<String, Integer> scoreMap){
         Integer totalPeopleNum = 0;
 
-        for(Integer value : scoreMap.values()) {
-            totalPeopleNum += value;
+        for(Integer peopleNum : scoreMap.values()) {
+            totalPeopleNum += peopleNum;
         }
         return totalPeopleNum;
     }
 
     // 与えられたファイルを読み込み、ファイルを返すメソッド
-    HashMap<String, Integer> readFile(File inputfile, Integer problemNum) throws IOException{
+    HashMap<String, Integer> readFile(File inputFile, Integer problemNum) throws IOException{
         HashMap<String, Integer> scoreMap = new HashMap<>(); // 点数、人数の辞書
-        BufferedReader in = new BufferedReader(new FileReader(inputfile));
+        BufferedReader in = new BufferedReader(new FileReader(inputFile));
         String[] splitLine; // 分割した入力文字列
         String line; // 入力文字列
 
@@ -55,13 +55,13 @@ public class ScoreAnalyzer1{
     }
 
     // マップに点数に対する人数を格納する処理
-    void storeScoreInMap(HashMap<String, Integer> ret, String[] splitLine){
+    void storeScoreInMap(HashMap<String, Integer> scoreMap, String[] splitLine){
         // 与えられた点数をとっているかどうか
-        if(ret.get(splitLine[4]) != null){
-            ret.replace(splitLine[4], ret.get(splitLine[4]) + 1);
+        if(scoreMap.get(splitLine[4]) != null){
+            scoreMap.put(splitLine[4], scoreMap.get(splitLine[4]) + 1);
         }
         else{
-            ret.put(splitLine[4], 1);
+            scoreMap.put(splitLine[4], 1);
         }
     }
 
@@ -71,8 +71,8 @@ public class ScoreAnalyzer1{
     }
 
     // 受け取った文字列を分割し,問題番号の一致を確認する
-    Boolean isGivenProbelmNumber(String[] splitline, Integer problemNum){
-        if(Integer.valueOf(splitline[2]) == problemNum) return true;
+    Boolean isGivenProbelmNumber(String[] splitLine, Integer problemNum){
+        if(Integer.valueOf(splitLine[2]) == problemNum) return true;
         return false;
     }
 
