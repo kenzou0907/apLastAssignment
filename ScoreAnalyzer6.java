@@ -163,7 +163,7 @@ public class ScoreAnalyzer6{
         if(studentData.getCount() != 0) System.out.print(Integer.toString(studentData.getMin()) + ",");
 
         // 平均値の出力
-        if(studentData.getCount() != 0) if(studentData.getCount() != 0)System.out.printf("%7.6f", studentData.getAvr());
+        if(studentData.getCount() != 0) System.out.printf("%7.6f", studentData.getAvr());
         System.out.println();
     }
 
