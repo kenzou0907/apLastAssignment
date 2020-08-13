@@ -15,7 +15,7 @@ public class Arguments{
                 this.arguments.add(args[i]);
             }
             else{
-                i = parseOption(args, i);
+                i = this.parseOption(args, i);
             }
         }
     }
