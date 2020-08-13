@@ -9,9 +9,9 @@ public class Stats{
         if(num >= 0){
             if(num > this.max) this.max = num;
             if(num < this.min) this.min = num;
-            sum += num;
-            count++;
-            avr = (double)sum / count;
+            this.sum += num;
+            this.count++;
+            this.avr = (double)this.sum / this.count;
         }
     }
 }
