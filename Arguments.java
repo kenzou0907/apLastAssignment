@@ -12,7 +12,7 @@ public class Arguments{
     void parse(String[] args){
         for(Integer i = 0; i < args.length; i++){
             if(!args[i].startsWith("--")){
-                arguments.add(args[i]);
+                this.arguments.add(args[i]);
             }
             else{
                 i = parseOption(args, i);
