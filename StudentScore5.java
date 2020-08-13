@@ -1,18 +1,20 @@
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class StudentScore5{
-    Stats stats = new Stats();
-    String id = null;
-    HashMap<String, Integer> studentScore = new HashMap<>();
-    HashMap<String, Integer> studentTime = new HashMap<>();
+    private Stats stats = new Stats();
+    private String id = null;
+    private HashMap<String, Integer> studentScore = new HashMap<>();
+    private HashMap<String, Integer> studentTime = new HashMap<>();
 
-    void putScore(String test, Integer score){
+    public void putScore(String test, Integer score){
         this.studentScore.put(test, score);
-        this.stats.put(score);
+        this.stats.setStats(score);
     }
 
-    void putTime(String test, String startTime, String endTime){
+    public void putTime(String test, String startTime, String endTime){
         String tmp[];
         Integer time = 0;
         if(!startTime.equals("")){
@@ -29,23 +31,47 @@ public class StudentScore5{
         this.studentTime.put(test, time);
     }
 
-    void putId(String id){
+    public Integer getStudentTime(String problemNum){
+        return this.studentTime.get(problemNum);
+    }
+
+    public void putId(String id){
         if(this.id == null) this.id = id;
     }
 
-    Integer getMax(){
-        return stats.max;
+   public Integer getMax(){
+        return this.stats.getMax();
     }
 
-    Integer getMin(){
-        return stats.min;
+    public Integer getMin(){
+        return this.stats.getMin();
     }
 
-    Double getAvr(){
-        return stats.avr;
+    public Double getAvr(){
+        return this.stats.getAvr();
     }
 
-    Double averageOfTakenTime(){
+    public Integer getCount(){
+        return this.stats.getCount();
+    }
+
+    public Integer getStudentScore(String problemNum){
+        return this.studentScore.get(problemNum);
+    }
+
+    public Set<String> getStudentScoreKeySet(){
+        return this.studentScore.keySet();
+    }
+
+    public String getId(){
+        return this.id;
+    }
+
+    public Collection<Integer> getStudentTimeValueSet(){
+        return this.studentTime.values();
+    }
+
+    public Double averageOfTakenTime(){
         Double ret = 0.0;
         Double count = 0.0;
         for(Map.Entry<String, Integer> entry: this.studentTime.entrySet()){
@@ -56,6 +82,6 @@ public class StudentScore5{
         }
 
         if(count != 0.0) return ret / count;
-        else return 0.0;
+        else return -1.0;
     }
 }

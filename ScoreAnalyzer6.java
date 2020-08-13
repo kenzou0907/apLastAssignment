@@ -25,7 +25,7 @@ public class ScoreAnalyzer6{
         arguments.parse(args);
 
         // ヘルプメッセージの有無
-        if(!arguments.help){
+        if(!arguments.getHelp()){
             this.ScoreAnalyzer(arguments);
         }else{
             this.printHelpMessage();
@@ -34,7 +34,7 @@ public class ScoreAnalyzer6{
 
     // ヘルプメッセージを出力しない際の処理
     void ScoreAnalyzer(Arguments args) throws IOException{
-        for(String arg: args.arguments){
+        for(String arg: args.getArgument()){
             // 引数に受け取ったファイルが存在するかどうかを確認する
             File inputFile = new File(arg);
             if(!inputFile.exists()){
@@ -81,7 +81,7 @@ public class ScoreAnalyzer6{
     ArrayList<Integer> makeProblemNumberList(HashMap<String, StudentScore5> scoreMap){
         ArrayList<Integer> problemNumberList = new ArrayList<>();
         for(Map.Entry<String, StudentScore5> entry: scoreMap.entrySet()){
-            for(String problemNum: entry.getValue().studentScore.keySet()){
+            for(String problemNum: entry.getValue().getStudentScoreKeySet()){
                 this.addProblemNumberList(problemNumberList, problemNum);
             }
         }
@@ -130,7 +130,7 @@ public class ScoreAnalyzer6{
 
     // 出力を行うメソッド
     void manageScoreOutput(HashMap<String, StudentScore5> scoreMap, ArrayList<Integer> problemNumList, Arguments args) throws IOException{
-        ArrayList<StudentScore5> sortedList = this.sortedStudentList(scoreMap, args.sort);
+        ArrayList<StudentScore5> sortedList = this.sortedStudentList(scoreMap, args.getSort());
         HashMap<Integer, Stats> totalStats = this.makeTotalStats(problemNumList);
 
         for(StudentScore5 studentScore: sortedList){
@@ -148,7 +148,7 @@ public class ScoreAnalyzer6{
     // 出力をまとめたメソッド
     void outputStatsForEachStudent(StudentScore5 studentData, ArrayList<Integer> problemNumList, HashMap<Integer, Stats> totalStats, Arguments args){
         // idと点数の出力
-        System.out.print(studentData.id + ",");
+        System.out.print(studentData.getId() + ",");
         for(Integer problemNum: problemNumList){
             this.studentScoreWrite(problemNum, studentData);
             this.studentTimeWrite(problemNum, studentData);
@@ -157,13 +157,14 @@ public class ScoreAnalyzer6{
         }
 
         // 最大値の出力
-        System.out.print(Integer.toString(studentData.getMax()) + ",");
+        if(studentData.getCount() != 0) System.out.print(Integer.toString(studentData.getMax()) + ",");
 
         // 最小値の出力
-        System.out.print(Integer.toString(studentData.getMin()) + ",");
+        if(studentData.getCount() != 0) System.out.print(Integer.toString(studentData.getMin()) + ",");
 
         // 平均値の出力
-        System.out.printf("%7.6f%n", studentData.getAvr());
+        if(studentData.getCount() != 0) if(studentData.getCount() != 0)System.out.printf("%7.6f", studentData.getAvr());
+        System.out.println();
     }
 
     // ソートされた生徒のリストの表示
@@ -179,24 +180,6 @@ public class ScoreAnalyzer6{
             Collections.sort(list, new StudentTakenTimeComparator());
         }
         return list;
-    }
-
-    // 2数を比較して大きい方を返す
-    Integer compareBig(Integer a, Integer b){
-        if(a > b) return a;
-        return b;
-    }
-
-    // 最大の時間を返す
-    Integer maxTime(ArrayList<StudentScore5> students){
-        Integer max = Integer.MIN_VALUE;
-        for(StudentScore5 student: students){
-            for(Integer time: student.studentTime.values()){
-                max = this.compareBig(max, time);
-            }
-        }
-
-        return max;
     }
 
     // ヒートマップを実際に表示する
@@ -217,11 +200,22 @@ public class ScoreAnalyzer6{
         this.outputImage(width, height, args);
     }
 
-    // どの種類のヒートマップかで動作を分ける
-    void whatKindOfHeatMap(StudentScore5 studentData, Integer problemNum, HashMap<Integer, Stats> totalScore, Integer maxTime, Arguments args, Integer width, Integer height) throws IOException{
-        if(args.heatmap == null|| args.heatmap.equals("score"))
-            this.drawHeatMap(studentData.studentScore.get(problemNum.toString()), totalScore.get(problemNum).max, width, height);
-        else if(args.heatmap.equals("time")) this.drawHeatMap(studentData.studentTime.get(problemNum.toString()), maxTime, width, height);
+    // 2数を比較して大きい方を返す
+    Integer compareBig(Integer a, Integer b){
+        if(a > b) return a;
+        return b;
+    }
+
+    // 最大の時間を返す
+    Integer maxTime(ArrayList<StudentScore5> students){
+        Integer max = Integer.MIN_VALUE;
+        for(StudentScore5 student: students){
+            for(Integer time: student.getStudentTimeValueSet()){
+                max = this.compareBig(max, time);
+            }
+        }
+
+        return max;
     }
 
     // 描画する
@@ -248,10 +242,17 @@ public class ScoreAnalyzer6{
         return ret;
     }
 
+    // どの種類のヒートマップかで動作を分ける
+    void whatKindOfHeatMap(StudentScore5 studentData, Integer problemNum, HashMap<Integer, Stats> totalScore, Integer maxTime, Arguments args, Integer width, Integer height) throws IOException{
+        if(args.getHeatmap() == null|| args.getHeatmap().equals("score"))
+            this.drawHeatMap(studentData.getStudentScore(problemNum.toString()), totalScore.get(problemNum).getMax(), width, height);
+        else if(args.getHeatmap().equals("time")) this.drawHeatMap(studentData.getStudentTime(problemNum.toString()), maxTime, width, height);
+    }
+
     // 全体の平均とかに追加するメソッド
     void removeAllStats(Integer problemNum, HashMap<Integer, Stats> totalStats, StudentScore5 value){
-        if(value.studentScore.get(Integer.toString(problemNum)) != null){
-            totalStats.get(problemNum).put(value.studentScore.get(Integer.toString(problemNum)));
+        if(value.getStudentScore(Integer.toString(problemNum)) != null){
+            totalStats.get(problemNum).setStats(value.getStudentScore(Integer.toString(problemNum)));
         }
     }
 
@@ -266,19 +267,19 @@ public class ScoreAnalyzer6{
 
     // 生徒の点数を出力
     void studentScoreWrite(Integer problemNum, StudentScore5 value){
-        if(value.studentScore.get(Integer.toString(problemNum)) == null || value.studentScore.get(Integer.toString(problemNum)) == -1){
+        if(value.getStudentScore(Integer.toString(problemNum)) == null || value.getStudentScore(Integer.toString(problemNum)) == -1){
             System.out.print(",");
         }else{
-            System.out.print(Integer.toString(value.studentScore.get(Integer.toString(problemNum))) + ",");
+            System.out.print(Integer.toString(value.getStudentScore(Integer.toString(problemNum))) + ",");
         }
     }
 
     // 生徒がかけた時間を出力
     void studentTimeWrite(Integer problemNum, StudentScore5 value){
-        if(value.studentTime.get(Integer.toString(problemNum)) == null || value.studentTime.get(Integer.toString(problemNum)) == -1){
+        if(value.getStudentTime(Integer.toString(problemNum)) == null || value.getStudentTime(Integer.toString(problemNum)) == -1){
             System.out.print(",");
         }else{
-            System.out.print(Integer.toString(value.studentTime.get(Integer.toString(problemNum))) + ",");
+            System.out.print(Integer.toString(value.getStudentTime(Integer.toString(problemNum))) + ",");
         }
     }
 
@@ -287,19 +288,19 @@ public class ScoreAnalyzer6{
     void outputTheTotalScore(HashMap<Integer, Stats> totalStats, ArrayList<Integer> problemNumList){
         // 最大値の出力
         for(Integer problemNum: problemNumList){
-            System.out.print("," + Integer.toString(totalStats.get(problemNum).max));
+            if(totalStats.get(problemNum).getCount() != 0) System.out.print("," + Integer.toString(totalStats.get(problemNum).getMax()));
         }
         System.out.println();
 
         // 最小値の出力
         for(Integer problemNum: problemNumList){
-            System.out.print("," + Integer.toString(totalStats.get(problemNum).min));
+            if(totalStats.get(problemNum).getCount() != 0) System.out.print("," + Integer.toString(totalStats.get(problemNum).getMin()));
         }
         System.out.println();
 
         // 平均値の出力
         for(Integer problemNum: problemNumList){
-            System.out.printf(",%.6f", totalStats.get(problemNum).avr);
+            if(totalStats.get(problemNum).getCount() != 0) System.out.printf(",%.6f", totalStats.get(problemNum).getAvr());
         }
         System.out.println();
     }
@@ -312,7 +313,7 @@ public class ScoreAnalyzer6{
 
         // heatmapオプションの有無で名前を決定する
         File heatMap = new File("heatmap.png");
-        if(args.dest != null) heatMap = new File(this.updateExtension(args.dest,".png"));
+        if(args.getDest() != null) heatMap = new File(this.updateExtension(args.getDest(),".png"));
 
         ImageIO.write(image, "png", heatMap);
     }

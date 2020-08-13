@@ -2,14 +2,14 @@ import java.util.Objects;
 import java.util.ArrayList;
 
 public class Arguments{
-    ArrayList<String> arguments = new ArrayList<>();
-    String dest = null;
-    String sort = null;
-    String heatmap = null;
-    Boolean help = false;
+    private ArrayList<String> arguments = new ArrayList<>();
+    private String dest = null;
+    private String sort = null;
+    private String heatmap = null;
+    private Boolean help = false;
 
     // 引数の整理を行うメソッド
-    void parse(String[] args){
+    public void parse(String[] args){
         for(Integer i = 0; i < args.length; i++){
             if(!args[i].startsWith("--")){
                 this.arguments.add(args[i]);
@@ -21,7 +21,7 @@ public class Arguments{
     }
 
     // オプションの解析を行うメソッド
-    Integer parseOption(String[] args, Integer i){
+    private Integer parseOption(String[] args, Integer i){
         if(Objects.equals(args[i], "--dest")){
             i++;
             this.dest = args[i];
@@ -35,5 +35,25 @@ public class Arguments{
             this.heatmap = args[i];
         }
         return i;
+    }
+
+    public Boolean getHelp(){
+        return this.help;
+    }
+
+    public String getDest(){
+        return this.dest;
+    }
+
+    public String getSort(){
+        return this.sort;
+    }
+
+    public String getHeatmap(){
+        return this.heatmap;
+    }
+
+    public ArrayList<String> getArgument(){
+        return this.arguments;
     }
 }

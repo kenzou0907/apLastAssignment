@@ -1,23 +1,36 @@
 import java.util.HashMap;
+import java.util.Set;
 
 public class StudentScore{
-    Stats stats = new Stats();
-    HashMap<String, Integer> studentScore = new HashMap<>();
+    private Stats stats = new Stats();
+    private HashMap<String, Integer> studentScore = new HashMap<>();
 
-    void put(String test, Integer score){
+    public void set(String test, Integer score){
         this.studentScore.put(test, score);
-        this.stats.put(score);
+        this.stats.setStats(score);
     }
 
-    Integer getMax(){
-        return this.stats.max;
+    public Integer getStudentScore(String problemNum){
+        return this.studentScore.get(problemNum);
     }
 
-    Integer getMin(){
-        return this.stats.min;
+    public Set<String> getStudentScoreKeySet(){
+        return this.studentScore.keySet();
     }
 
-    Double getAvr(){
-        return this.stats.avr;
+    public Integer getMax(){
+        return this.stats.getMax();
+    }
+
+    public Integer getMin(){
+        return this.stats.getMin();
+    }
+
+    public Double getAvr(){
+        return this.stats.getAvr();
+    }
+
+    public Integer getCount(){
+        return this.stats.getCount();
     }
 }
