@@ -10,14 +10,14 @@ public class StudentScore{
     }
 
     Integer getMax(){
-        return stats.max;
+        return this.stats.max;
     }
 
     Integer getMin(){
-        return stats.min;
+        return this.stats.min;
     }
 
     Double getAvr(){
-        return stats.avr;
+        return this.stats.avr;
     }
 }
