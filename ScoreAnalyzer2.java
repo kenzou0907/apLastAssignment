@@ -1,3 +1,9 @@
+/**
+ * 最終課題 ステップ2
+ * 氏名 近藤 英雅
+ * 学生証番号　953580
+ */
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -107,17 +113,17 @@ public class ScoreAnalyzer2{
         // 点数がどのように定められているかを集計
         for(Map.Entry<String, HashMap<String, Integer>> entry: scoreMap.entrySet()){
             HashMap<String, Integer> value = entry.getValue();
-            for(String k: value.keySet()){
-                this.appendScore(scores, k);
+            for(String score: value.keySet()){
+                this.appendScore(scores, score);
             }
         }
         return scores;
     }
 
     // 存在する場合点数を追加する処理
-    void appendScore(ArrayList<String> scores, String k){
-        if(!scores.contains(k)){
-            scores.add(k);
+    void appendScore(ArrayList<String> scores, String score){
+        if(!scores.contains(score)){
+            scores.add(score);
         }
     }
 
